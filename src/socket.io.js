@@ -1,5 +1,4 @@
-const { createRelation } = require('./controllers');
-const { UserServices } = require('./services');
+const { UserServices, RelationServices } = require('./services');
 
 module.exports = io => {
   io.on('connection', socket => {
@@ -14,7 +13,9 @@ module.exports = io => {
 
     socket.on('invitation', async data => {
       //Escribimos la logíca de la función
-      const result = await createRelation(data);
+      const { socketId, result } = await RelationServices.createRelation(data);
+      io.to(socketId).emit('invitationRecived', result);
+      io.to(socket.id).emit('invitationRecived', result);
     });
 
     /* Emitir eventos */

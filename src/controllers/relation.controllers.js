@@ -16,8 +16,8 @@ const createRelation = async (req, res, next) => {
 
 const getRelation = async (req, res, next) => {
   try {
-    const id = req.params.id;
-
+    const { id } = req.params;
+    const result = await RelationServices.getRelation(id);
     res.status(200).json(result);
   } catch (error) {
     next({
