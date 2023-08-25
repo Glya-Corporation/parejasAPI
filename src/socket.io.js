@@ -1,4 +1,4 @@
-const { UserServices, RelationServices } = require('./services');
+const { UserServices, RelationServices, LikeListServices, DontLikeListServices } = require('./services');
 
 module.exports = io => {
   io.on('connection', socket => {
@@ -16,6 +16,35 @@ module.exports = io => {
       const { socketId, result } = await RelationServices.createRelation(data);
       io.to(socketId).emit('invitationRecived', result);
       io.to(socket.id).emit('invitationRecived', result);
+    });
+
+    /* Escuchamos evento de agregar me gusta */
+
+    socket.on('addILike', async data => {
+      const result = await LikeListServices.createLikeList(data);
+
+      if (result) {
+        io.to(data.socketId).emit('likeAdded', { value: true });
+        io.to(socket.id).emit('likeAdded', { value: true });
+      }
+    });
+
+    socket.on('addIDontLike', async data => {
+      const result = await DontLikeListServices.createDontLikeList(data);
+      io.to(data.socketId).emit('dontLikeAdded', { value: true });
+      io.to(socket.id).emit('dontLikeAdded', { value: true });
+    });
+
+    socket.on('deleteLike', async data => {
+      const result = await LikeListServices.deleteLikeList(data.id);
+      io.to(data.socketId).emit('likeAdded', { value: true });
+      io.to(socket.id).emit('likeAdded', { value: true });
+    });
+
+    socket.on('deleteDontLike', async data => {
+      const result = await DontLikeListServices.deleteDontLikeList(data.id);
+      io.to(data.socketId).emit('dontLikeAdded', { value: true });
+      io.to(socket.id).emit('dontLikeAdded', { value: true });
     });
 
     /* Emitir eventos */

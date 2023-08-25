@@ -5,7 +5,7 @@ const db = require('./utils/database');
 const hendleError = require('./middlewares/error.middleware');
 const initModels = require('./models/initModels');
 
-const { UserRoutes, AuthRoutes, RelationRoutes } = require('./routes');
+const { UserRoutes, AuthRoutes, RelationRoutes, LikeListRoutes, DontLikeListRoutes } = require('./routes');
 
 const app = express();
 
@@ -32,6 +32,8 @@ app.get('/', (req, res) => {
 app.use('/api/v1', UserRoutes);
 app.use('/api/v1', AuthRoutes);
 app.use('/api/v1', RelationRoutes);
+app.use('/api/v1', LikeListRoutes);
+app.use('/api/v1', DontLikeListRoutes);
 
 app.use(hendleError);
 
